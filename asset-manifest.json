@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/SocialNetwork/static/css/main.b5525656.css",
+    "main.js": "/SocialNetwork/static/js/main.91f4db1f.js",
+    "index.html": "/SocialNetwork/index.html",
+    "main.b5525656.css.map": "/SocialNetwork/static/css/main.b5525656.css.map",
+    "main.91f4db1f.js.map": "/SocialNetwork/static/js/main.91f4db1f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b5525656.css",
+    "static/js/main.91f4db1f.js"
+  ]
+}
