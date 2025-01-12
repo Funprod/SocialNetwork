@@ -1,0 +1,30 @@
+.header {
+    grid-area: h;
+    background-color: #ffffff;
+}
+
+.header img {
+    width: 20px;
+}
+
+.loginBlock {
+    float: right;
+    color: black;
+    text-decoration: none;
+}
+
+.loginBtn {
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.loginBtn:visited {
+    color: black;
+}
+.loginBtn:hover {
+    color: black; /* Цвет текста при наведении */
+}
+
+.loginBtn:active {
+    color: black; /* Цвет текста при нажатии */
+}
