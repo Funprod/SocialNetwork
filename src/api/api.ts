@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Login } from '../redux/auth-reducer';
 
 const instance = axios.create({
     withCredentials: true,
@@ -28,11 +29,29 @@ export const profileAPI = {
         const res = await instance.get(`profile/${userId}`);
         return res;
     },
+    async getStatus(userId: string) {
+        const res = await instance.get(`profile/status/${userId}`);
+        return res;
+    },
+    async updateStatus(status: string) {
+        const res = await instance.put(`profile/status`, { status: status });
+        return res;
+    },
 };
 
 export const authAPI = {
     async me() {
-        const res = await instance.get(`auth/me`);
+        try {
+            const res = await instance.get(`auth/me`);
+            return res.data;
+        } catch (error) {
+            console.error('Failed to fetch', error);
+            return null;
+        }
+    },
+
+    async login(data: Login) {
+        const res = await instance.post('auth/login', data);
         return res.data;
     },
 };

@@ -1,21 +1,30 @@
 import { UserDataType } from '../../../redux/profile-reducer';
+import { Preloader } from '../../common/Preloader/Preloader';
 import s from './ProfileInfo.module.css';
+import { ProfileStatus } from './ProfileStatus';
 
 export type ProfileInfoType = {
     // store: ProfilePageType;
     profile: UserDataType;
+    status: string;
+    updateStatus: (status: string) => void;
+    isLoading: boolean;
 };
 
-export const ProfileInfo: React.FC<ProfileInfoType> = ({ profile }) => {
+export const ProfileInfo: React.FC<ProfileInfoType> = ({ profile, status, updateStatus, isLoading }) => {
+    if (isLoading) {
+        return <Preloader />;
+    }
     return (
         <div>
             <div>
-                <img src="https://i.pinimg.com/736x/56/bc/92/56bc92d7cad2131fb87f52af3cd3e71c.jpg" alt="#" />
+                {/* <img src="https://i.pinimg.com/736x/56/bc/92/56bc92d7cad2131fb87f52af3cd3e71c.jpg" alt="#" /> */}
             </div>
             <div className={s.descriptionBlock}>
                 <img src={profile.photos.large} alt="Здесь должна быть ваша фотография" />
                 <h2>{profile.fullName}</h2>
-                <p>Статус - {profile.aboutMe}</p>
+                {/* <p>Статус - {profile.aboutMe}</p> */}
+                <ProfileStatus status={status} updateStatus={updateStatus} />
                 <ul>
                     Контакты:
                     <li>{profile.contacts.github}</li>

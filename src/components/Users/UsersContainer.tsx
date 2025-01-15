@@ -16,7 +16,6 @@ export type UsersContainerType = {
     currentPage: number;
     isFetching: boolean;
     followingInProgress: number[];
-    isAuth: boolean;
     setFollowingInProgress: (isProgress: boolean, userId: number) => void;
     getUsers: (currentPage: number, pageSize: number) => void;
     follow: (userId: number) => void;
@@ -33,7 +32,6 @@ class UsersContainer extends React.Component<UsersContainerType> {
     };
 
     render(): React.ReactNode {
-        if (!this.props.isAuth) return <Redirect to={'/login'} />;
         return (
             <>
                 {this.props.isFetching && <Preloader />}
@@ -61,7 +59,6 @@ let mapStateToProps = (state: RootState) => {
         currentPage: state.usersPage.currentPage,
         isFetching: state.usersPage.isFetching,
         followingInProgress: state.usersPage.followingInProgress,
-        isAuth: state.auth.isAuth,
     };
 };
 

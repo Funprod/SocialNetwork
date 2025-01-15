@@ -26,6 +26,8 @@ let initialState: ProfilePageType = {
         photos: { large: '', small: '' },
         userId: 1,
     },
+    status: '',
+    isLoading: false,
 };
 
 //actions
@@ -44,6 +46,12 @@ export const profileReducer = (state: ProfilePageType = initialState, action: Ac
         }
         case 'SET_USER_PROFILE': {
             return { ...state, profile: action.usersProfile };
+        }
+        case 'SET_USER_STATUS': {
+            return { ...state, status: action.status };
+        }
+        case 'SET_IS_LOADING': {
+            return { ...state, isLoading: action.loading };
         }
         default:
             return state;
@@ -69,11 +77,40 @@ export const setUserProfile = (usersProfile: UserDataType) => {
     } as const;
 };
 
+export const setStatus = (status: string) => {
+    return {
+        type: 'SET_USER_STATUS',
+        status,
+    } as const;
+};
+
+export const setIsLoading = (loading: boolean) => {
+    return {
+        type: 'SET_IS_LOADING',
+        loading,
+    } as const;
+};
+
 //thunks
 
 export const getUserProfile = (userId: string) => (dispatch: Dispatch) => {
+    dispatch(setIsLoading(true));
     profileAPI.getProfile(userId).then((res) => {
         dispatch(setUserProfile(res.data));
+        dispatch(setIsLoading(false));
+    });
+};
+export const getUserStatus = (userId: string) => (dispatch: Dispatch) => {
+    profileAPI.getStatus(userId).then((res) => {
+        dispatch(setStatus(res.data));
+    });
+};
+export const updateUserStatus = (status: string) => (dispatch: Dispatch) => {
+    profileAPI.updateStatus(status).then((res) => {
+        if (res.data.resultCode === 0) {
+            dispatch(setStatus(status));
+            dispatch(setIsLoading(false));
+        }
     });
 };
 
@@ -82,12 +119,16 @@ export const getUserProfile = (userId: string) => (dispatch: Dispatch) => {
 type ActionType =
     | ReturnType<typeof addPostActionCreator>
     | ReturnType<typeof updatePostNewTextActionType>
-    | ReturnType<typeof setUserProfile>;
+    | ReturnType<typeof setUserProfile>
+    | ReturnType<typeof setStatus>
+    | ReturnType<typeof setIsLoading>;
 
 type ProfilePageType = {
     profile: UserDataType;
     postData: PostDataType[];
     newPostText: string;
+    status: string;
+    isLoading: boolean;
 };
 
 type PostDataType = {
