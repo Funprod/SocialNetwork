@@ -2,25 +2,18 @@ import s from './Dialogs.module.css';
 import { DialogItem } from './DialogItem/DialogsItem';
 import { Message } from './Message/Message';
 import { DialogsPageTypeStore } from '../../redux/store';
-import { ChangeEvent } from 'react';
-import { Field, reduxForm } from 'redux-form';
+import { Field, InjectedFormProps, reduxForm } from 'redux-form';
+import { FormControl } from '../common/FormsControls/FormsControls';
+import { maxLengthCreator, required } from '../../utils/validators/validator';
 
 type DialogsStateType = {
-    addMessage: () => void;
-    onChange: (text: string) => void;
+    addMessage: (newMessageBody: string) => void;
     dialogsPage: DialogsPageTypeStore;
 };
 
-export const Dialogs: React.FC<DialogsStateType> = ({ addMessage, onChange, dialogsPage }) => {
-    let onClickAddMessage = () => {
-        addMessage();
-    };
-
-    const onChangeNewText = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        onChange(e.target.value);
-    };
-    const addNewMessage = (values: any) => {
-        alert(values.newMessageBody);
+export const Dialogs: React.FC<DialogsStateType> = ({ addMessage, dialogsPage }) => {
+    const addNewMessage = (values: FormData) => {
+        addMessage(values.newMessageBody);
     };
 
     return (
@@ -40,27 +33,27 @@ export const Dialogs: React.FC<DialogsStateType> = ({ addMessage, onChange, dial
     );
 };
 
-type MessageForm = any;
+type FormData = {
+    newMessageBody: string;
+};
 
-const AddMessageForm = (props: MessageForm) => {
+const maxLength50 = maxLengthCreator(50);
+
+const AddMessageForm = (props: InjectedFormProps<FormData>) => {
     return (
         <form onSubmit={props.handleSubmit}>
             <div>
                 <Field
-                    component={'textarea'}
+                    tagName={'textarea'}
+                    component={FormControl}
+                    validate={[required, maxLength50]}
                     name={'newMessageBody'}
                     placeholder={'Введите сообщение'}
-                    // value={dialogsPage.messageText}
                 />
-                {/* <textarea
-                    placeholder="Введите сообщение"
-                    onChange={onChangeNewText}
-                    value={dialogsPage.messageText}
-                ></textarea> */}
                 <button>Отправить</button>
             </div>
         </form>
     );
 };
 
-const AddMessageFormRedux = reduxForm({ form: 'dialogAddMessageForm' })(AddMessageForm);
+const AddMessageFormRedux = reduxForm<FormData>({ form: 'dialogAddMessageForm' })(AddMessageForm);

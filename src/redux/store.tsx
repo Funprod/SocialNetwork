@@ -26,7 +26,6 @@ export type ProfilePageTypeStore = {
 export type DialogsPageTypeStore = {
     messagesData: MessageDataTypeStore[];
     dialogsData: DialogsDataTypStore[];
-    messageText: string;
 };
 
 export type SideBarTypeStore = {

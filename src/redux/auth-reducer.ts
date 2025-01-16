@@ -1,7 +1,9 @@
-import { Dispatch } from 'redux';
+import { AnyAction, Dispatch } from 'redux';
 import { authAPI } from '../api/api';
+import { ThunkDispatch } from 'redux-thunk';
+import { RootState } from './redux-store';
 
-let initialState: AuthType = {
+const initialState: AuthType = {
     id: 0,
     email: '',
     login: '',
@@ -13,10 +15,7 @@ export const authReducer = (state: AuthType = initialState, action: ActionType):
         case 'SET_USER_DATA': {
             return {
                 ...state,
-                id: action.data.id,
-                email: action.data.email,
-                login: action.data.login,
-                isAuth: true,
+                ...action.payload,
             };
         }
         default:
@@ -24,21 +23,38 @@ export const authReducer = (state: AuthType = initialState, action: ActionType):
     }
 };
 //actions
-export const setAuthUserData = (data: AuthType) => ({ type: 'SET_USER_DATA', data } as const);
+export const setAuthUserData = ({ id, login, email, isAuth }: AuthType) =>
+    ({
+        type: 'SET_USER_DATA',
+        payload: {
+            id,
+            login,
+            email,
+            isAuth,
+        },
+    } as const);
 
 //thunks
 export const getAuthUserData = () => (dispatch: Dispatch) => {
     authAPI.me().then((res) => {
         if (res.resultCode === 0) {
-            dispatch(setAuthUserData(res.data));
+            const { id, login, email } = res.data;
+            dispatch(setAuthUserData({ id, login, email, isAuth: true }));
         }
     });
 };
 
-export const login = (data: Login) => (dispatch: Dispatch) => {
+export const login = (data: LoginAuth) => (dispatch: ThunkDispatch<RootState, unknown, AnyAction>) => {
     authAPI.login(data).then((res) => {
         if (res.resultCode === 0) {
-            dispatch(setAuthUserData(res.data));
+            dispatch(getAuthUserData());
+        }
+    });
+};
+export const logout = () => (dispatch: Dispatch) => {
+    authAPI.logout().then((res) => {
+        if (res.resultCode === 0) {
+            dispatch(setAuthUserData({ id: 0, email: '', login: '', isAuth: false }));
         }
     });
 };
@@ -52,7 +68,7 @@ export type AuthType = {
     isAuth: boolean;
 };
 
-export type Login = {
+export type LoginAuth = {
     email: string;
     password: string;
     rememberMe: boolean;

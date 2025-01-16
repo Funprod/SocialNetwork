@@ -7,7 +7,6 @@ let initialState: ProfilePageType = {
         { id: 2, message: 'it`s my first post', likeCount: 20 },
         { id: 3, message: 'it`s my second post', likeCount: 20 },
     ],
-    newPostText: '',
     profile: {
         aboutMe: '',
         contacts: {
@@ -36,13 +35,8 @@ export const profileReducer = (state: ProfilePageType = initialState, action: Ac
         case 'ADD_POST': {
             return {
                 ...state,
-                postData: [...state.postData, { id: 5, message: state.newPostText, likeCount: 0 }],
-                newPostText: '',
+                postData: [...state.postData, { id: 5, message: action.newPost, likeCount: 0 }],
             };
-        }
-        case 'UPDATE_POST_NEW_TEXT': {
-            state.newPostText = action.newText;
-            return { ...state, newPostText: action.newText };
         }
         case 'SET_USER_PROFILE': {
             return { ...state, profile: action.usersProfile };
@@ -58,15 +52,10 @@ export const profileReducer = (state: ProfilePageType = initialState, action: Ac
     }
 };
 
-export const addPostActionCreator = () => {
+export const addPostActionCreator = (newPost: string) => {
     return {
         type: 'ADD_POST',
-    } as const;
-};
-export const updatePostNewTextActionType = (text: string) => {
-    return {
-        type: 'UPDATE_POST_NEW_TEXT',
-        newText: text,
+        newPost,
     } as const;
 };
 
@@ -118,7 +107,6 @@ export const updateUserStatus = (status: string) => (dispatch: Dispatch) => {
 
 type ActionType =
     | ReturnType<typeof addPostActionCreator>
-    | ReturnType<typeof updatePostNewTextActionType>
     | ReturnType<typeof setUserProfile>
     | ReturnType<typeof setStatus>
     | ReturnType<typeof setIsLoading>;
@@ -126,7 +114,6 @@ type ActionType =
 type ProfilePageType = {
     profile: UserDataType;
     postData: PostDataType[];
-    newPostText: string;
     status: string;
     isLoading: boolean;
 };

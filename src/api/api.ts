@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Login } from '../redux/auth-reducer';
+import { LoginAuth } from '../redux/auth-reducer';
 
 const instance = axios.create({
     withCredentials: true,
@@ -50,8 +50,12 @@ export const authAPI = {
         }
     },
 
-    async login(data: Login) {
+    async login(data: LoginAuth) {
         const res = await instance.post('auth/login', data);
+        return res.data;
+    },
+    async logout() {
+        const res = await instance.delete('auth/login');
         return res.data;
     },
 };

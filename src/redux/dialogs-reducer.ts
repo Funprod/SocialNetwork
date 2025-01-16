@@ -1,7 +1,4 @@
-import { ActionTypeStore, DialogsPageTypeStore, MessageDataTypeStore } from './store';
-
-const ADD_MESSAGE = 'ADD_MESSAGE';
-const UPDATE_MESSAGE_TEXT = 'UPDATE_MESSAGE_TEXT';
+import { DialogsPageTypeStore } from './store';
 
 let initialState: DialogsPageTypeStore = {
     dialogsData: [
@@ -20,38 +17,26 @@ let initialState: DialogsPageTypeStore = {
         { id: 5, message: 'Yo!' },
         { id: 6, message: 'Yo!' },
     ],
-    messageText: '',
 };
 
-export const dialogReducer = (
-    state: DialogsPageTypeStore = initialState,
-    action: ActionTypeStore,
-): DialogsPageTypeStore => {
+export const dialogReducer = (state: DialogsPageTypeStore = initialState, action: Action): DialogsPageTypeStore => {
     switch (action.type) {
-        case ADD_MESSAGE: {
+        case 'ADD_MESSAGE': {
             return {
                 ...state,
-                messagesData: [...state.messagesData, { id: 7, message: state.messageText }],
-                messageText: '',
+                messagesData: [...state.messagesData, { id: 7, message: action.newMessageBody }],
             };
-        }
-        case UPDATE_MESSAGE_TEXT: {
-            return { ...state, messageText: action.newMessage };
         }
         default:
             return state;
     }
 };
 
-export const addMessageActionCreator = (): ActionTypeStore => {
+export const addMessageActionCreator = (newMessageBody: string) => {
     return {
-        type: ADD_MESSAGE,
-    };
+        type: 'ADD_MESSAGE',
+        newMessageBody,
+    } as const;
 };
 
-export const updateMessageTextActionType = (text: string): ActionTypeStore => {
-    return {
-        type: UPDATE_MESSAGE_TEXT,
-        newMessage: text,
-    };
-};
+type Action = ReturnType<typeof addMessageActionCreator>;
