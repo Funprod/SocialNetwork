@@ -1,10 +1,9 @@
 import { UserDataType } from '../../../redux/profile-reducer';
 import { Preloader } from '../../common/Preloader/Preloader';
 import s from './ProfileInfo.module.css';
-import { ProfileStatus } from './ProfileStatus';
+import { ProfileStatusWithHooks } from './ProfileStatusWithHooks';
 
 export type ProfileInfoType = {
-    // store: ProfilePageType;
     profile: UserDataType;
     status: string;
     updateStatus: (status: string) => void;
@@ -23,8 +22,7 @@ export const ProfileInfo: React.FC<ProfileInfoType> = ({ profile, status, update
             <div className={s.descriptionBlock}>
                 <img src={profile.photos.large} alt="Здесь должна быть ваша фотография" />
                 <h2>{profile.fullName}</h2>
-                {/* <p>Статус - {profile.aboutMe}</p> */}
-                <ProfileStatus status={status} updateStatus={updateStatus} />
+                <ProfileStatusWithHooks status={status} updateStatus={updateStatus} />
                 <ul>
                     Контакты:
                     <li>{profile.contacts.github}</li>

@@ -2,6 +2,7 @@ import { AnyAction, Dispatch } from 'redux';
 import { authAPI } from '../api/api';
 import { ThunkDispatch } from 'redux-thunk';
 import { RootState } from './redux-store';
+import { stopSubmit } from 'redux-form';
 
 const initialState: AuthType = {
     id: 0,
@@ -36,7 +37,7 @@ export const setAuthUserData = ({ id, login, email, isAuth }: AuthType) =>
 
 //thunks
 export const getAuthUserData = () => (dispatch: Dispatch) => {
-    authAPI.me().then((res) => {
+    return authAPI.me().then((res) => {
         if (res.resultCode === 0) {
             const { id, login, email } = res.data;
             dispatch(setAuthUserData({ id, login, email, isAuth: true }));
@@ -45,9 +46,13 @@ export const getAuthUserData = () => (dispatch: Dispatch) => {
 };
 
 export const login = (data: LoginAuth) => (dispatch: ThunkDispatch<RootState, unknown, AnyAction>) => {
+    // dispatch(stopSubmit('login', { _error: 'Неверный логин или пароль' }));
     authAPI.login(data).then((res) => {
         if (res.resultCode === 0) {
             dispatch(getAuthUserData());
+        } else {
+            let message = res.messages.length > 0 ? res.messages[0] : 'Какая-то ошибка';
+            dispatch(stopSubmit('login', { _error: message }));
         }
     });
 };

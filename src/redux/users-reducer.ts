@@ -60,13 +60,13 @@ export const setFollowingInProgress = (isProgress: boolean, userId: number) =>
 
 //thunks
 
-export const getUsers = (currentPage: number, pageSize: number) => (dispatch: Dispatch) => {
+export const getUsers = (page: number, pageSize: number) => (dispatch: Dispatch) => {
     dispatch(setIsFetching(true));
-    usersAPI.getUsers(currentPage, pageSize).then((res) => {
+    usersAPI.getUsers(page, pageSize).then((res) => {
         dispatch(setIsFetching(false));
         dispatch(setUsers(res.items));
         dispatch(setTotalUsersCount(res.totalCount));
-        dispatch(setCurrentPage(currentPage));
+        dispatch(setCurrentPage(page));
     });
 };
 

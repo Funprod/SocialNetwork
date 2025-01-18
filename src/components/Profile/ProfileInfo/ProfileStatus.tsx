@@ -1,6 +1,4 @@
 import React, { ChangeEvent } from 'react';
-import s from './ProfileInfo.module.css';
-import { RootState } from '../../../redux/redux-store';
 
 export type ProfileStatusType = {
     status: string;

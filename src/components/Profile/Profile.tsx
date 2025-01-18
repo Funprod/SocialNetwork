@@ -12,6 +12,7 @@ export type ProfileType = {
 };
 
 export const Profile: React.FC<ProfileType> = ({ profile, status, updateStatus, isLoading }) => {
+    console.log('RENDER my Profile');
     return (
         <div className={s.content}>
             <ProfileInfo profile={profile} status={status} updateStatus={updateStatus} isLoading={isLoading} />

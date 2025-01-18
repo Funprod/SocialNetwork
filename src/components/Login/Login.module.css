@@ -1,3 +1,9 @@
 .rememberMe {
     display: flex;
 }
+
+.formSummaryError {
+    display: inline-block;
+    padding: 5px 0 5px 0;
+    color: red;
+}

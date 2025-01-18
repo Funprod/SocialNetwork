@@ -60,6 +60,7 @@ export const LoginForm = (props: InjectedFormProps<FormData>) => {
                     type={'password'}
                 />
             </div>
+            {props.error && <div className={s.formSummaryError}>{props.error}</div>}
             <div className={s.rememberMe}>
                 <span>запомнить меня</span>
                 <Field name={'rememberMe'} type={'checkbox'} component={FormControl} tagName={'Input'} />

@@ -12,6 +12,8 @@ type MyPostDataType = {
 };
 
 export const MyPosts: React.FC<MyPostDataType> = ({ postData, addPost }) => {
+    console.log('RENDER my posts');
+
     const addNewPost = (values: FormData) => {
         addPost(values.addNewPost);
     };
