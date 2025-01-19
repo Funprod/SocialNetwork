@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux';
 import { profileAPI } from '../api/api';
 
-let initialState: ProfilePageType = {
+const initialState: ProfilePageType = {
     postData: [
         { id: 1, message: 'Hi, how are you?', likeCount: 15 },
         { id: 2, message: 'it`s my first post', likeCount: 20 },
@@ -47,6 +47,12 @@ export const profileReducer = (state: ProfilePageType = initialState, action: Ac
         case 'SET_IS_LOADING': {
             return { ...state, isLoading: action.loading };
         }
+        case 'DELETE_POST': {
+            return {
+                ...state,
+                postData: state.postData.filter((p) => p.id !== action.postId),
+            };
+        }
         default:
             return state;
     }
@@ -80,27 +86,31 @@ export const setIsLoading = (loading: boolean) => {
     } as const;
 };
 
+export const deletePost = (postId: number) => {
+    return {
+        type: 'DELETE_POST',
+        postId,
+    } as const;
+};
+
 //thunks
 
-export const getUserProfile = (userId: string) => (dispatch: Dispatch) => {
+export const getUserProfile = (userId: string) => async (dispatch: Dispatch) => {
     dispatch(setIsLoading(true));
-    profileAPI.getProfile(userId).then((res) => {
-        dispatch(setUserProfile(res.data));
+    const res = await profileAPI.getProfile(userId);
+    dispatch(setUserProfile(res.data));
+    dispatch(setIsLoading(false));
+};
+export const getUserStatus = (userId: string) => async (dispatch: Dispatch) => {
+    const res = await profileAPI.getStatus(userId);
+    dispatch(setStatus(res.data));
+};
+export const updateUserStatus = (status: string) => async (dispatch: Dispatch) => {
+    const res = await profileAPI.updateStatus(status);
+    if (res.data.resultCode === 0) {
+        dispatch(setStatus(status));
         dispatch(setIsLoading(false));
-    });
-};
-export const getUserStatus = (userId: string) => (dispatch: Dispatch) => {
-    profileAPI.getStatus(userId).then((res) => {
-        dispatch(setStatus(res.data));
-    });
-};
-export const updateUserStatus = (status: string) => (dispatch: Dispatch) => {
-    profileAPI.updateStatus(status).then((res) => {
-        if (res.data.resultCode === 0) {
-            dispatch(setStatus(status));
-            dispatch(setIsLoading(false));
-        }
-    });
+    }
 };
 
 //types
@@ -109,7 +119,8 @@ type ActionType =
     | ReturnType<typeof addPostActionCreator>
     | ReturnType<typeof setUserProfile>
     | ReturnType<typeof setStatus>
-    | ReturnType<typeof setIsLoading>;
+    | ReturnType<typeof setIsLoading>
+    | ReturnType<typeof deletePost>;
 
 type ProfilePageType = {
     profile: UserDataType;

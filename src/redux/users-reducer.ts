@@ -1,6 +1,7 @@
-import { Dispatch } from 'redux';
+import { AnyAction, Dispatch } from 'redux';
 import { usersAPI } from '../api/api';
-let initialState: UsersDataType = {
+import { updateObjectInArray } from '../utils/object-helpers';
+let initialState: UsersData = {
     users: [],
     pageSize: 20,
     totalUsersCount: 0,
@@ -9,17 +10,19 @@ let initialState: UsersDataType = {
     followingInProgress: [],
 };
 
-export const usersReducer = (state: UsersDataType = initialState, action: ActionType): UsersDataType => {
+export const usersReducer = (state: UsersData = initialState, action: ActionType): UsersData => {
     switch (action.type) {
         case 'FOLLOW':
             return {
                 ...state,
-                users: state.users.map((u) => (u.id === action.userId ? { ...u, followed: true } : u)),
+                users: updateObjectInArray(state.users, action.userId, 'id', { followed: true }),
+                // state.users.map((u) => (u.id === action.userId ? { ...u, followed: true } : u)),
             };
         case 'UNFOLLOW':
             return {
                 ...state,
-                users: state.users.map((u) => (u.id === action.userId ? { ...u, followed: false } : u)),
+                users: updateObjectInArray(state.users, action.userId, 'id', { followed: false }),
+                // state.users.map((u) => (u.id === action.userId ? { ...u, followed: false } : u)),
             };
         case 'SET_USERS':
             return { ...state, users: action.users };
@@ -60,39 +63,41 @@ export const setFollowingInProgress = (isProgress: boolean, userId: number) =>
 
 //thunks
 
-export const getUsers = (page: number, pageSize: number) => (dispatch: Dispatch) => {
+const followUnfollowFlow = async (
+    dispatch: Dispatch,
+    userId: number,
+    apiMethod: ApiMethodType,
+    actionCreator: ActionCreatorType,
+) => {
+    dispatch(setFollowingInProgress(true, userId));
+    const res = await apiMethod(userId);
+
+    if (res.resultCode === 0) {
+        dispatch(actionCreator(userId));
+    }
+    dispatch(setFollowingInProgress(false, userId));
+};
+
+export const getUsers = (page: number, pageSize: number) => async (dispatch: Dispatch) => {
     dispatch(setIsFetching(true));
-    usersAPI.getUsers(page, pageSize).then((res) => {
-        dispatch(setIsFetching(false));
-        dispatch(setUsers(res.items));
-        dispatch(setTotalUsersCount(res.totalCount));
-        dispatch(setCurrentPage(page));
-    });
+    const res = await usersAPI.getUsers(page, pageSize);
+    dispatch(setIsFetching(false));
+    dispatch(setUsers(res.items));
+    dispatch(setTotalUsersCount(res.totalCount));
+    dispatch(setCurrentPage(page));
 };
 
-export const follow = (userId: number) => (dispatch: Dispatch) => {
-    dispatch(setFollowingInProgress(true, userId));
-    usersAPI.follow(userId).then((res) => {
-        if (res.resultCode === 0) {
-            dispatch(followSuccess(userId));
-        }
-        dispatch(setFollowingInProgress(false, userId));
-    });
+export const follow = (userId: number) => async (dispatch: Dispatch) => {
+    followUnfollowFlow(dispatch, userId, usersAPI.follow.bind(usersAPI), followSuccess);
 };
 
-export const unfollow = (userId: number) => (dispatch: Dispatch) => {
-    dispatch(setFollowingInProgress(true, userId));
-    usersAPI.unfollow(userId).then((res) => {
-        if (res.resultCode === 0) {
-            dispatch(unfollowSuccess(userId));
-        }
-        dispatch(setFollowingInProgress(false, userId));
-    });
+export const unfollow = (userId: number) => async (dispatch: Dispatch) => {
+    followUnfollowFlow(dispatch, userId, usersAPI.unfollow.bind(usersAPI), unfollowSuccess);
 };
 
 // types
 
-export type UsersDataType = {
+export type UsersData = {
     users: UserType[];
     pageSize: number;
     totalUsersCount: number;
@@ -122,3 +127,6 @@ type ActionType =
     | ReturnType<typeof setTotalUsersCount>
     | ReturnType<typeof setIsFetching>
     | ReturnType<typeof setFollowingInProgress>;
+
+type ApiMethodType = (userId: number) => Promise<{ resultCode: number }>;
+type ActionCreatorType = (userId: number) => { type: string; userId: number };

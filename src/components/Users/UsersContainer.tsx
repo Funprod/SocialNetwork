@@ -16,19 +16,6 @@ import {
     getUsersSelector,
 } from '../../redux/users-selectors';
 
-export type UsersContainerType = {
-    users: UserType[];
-    pageSize: number;
-    totalUsersCount: number;
-    currentPage: number;
-    isFetching: boolean;
-    followingInProgress: number[];
-    setFollowingInProgress: (isProgress: boolean, userId: number) => void;
-    getUsers: (currentPage: number, pageSize: number) => void;
-    follow: (userId: number) => void;
-    unfollow: (userId: number) => void;
-};
-
 class UsersContainer extends React.Component<UsersContainerType> {
     componentDidMount(): void {
         this.props.getUsers(this.props.currentPage, this.props.pageSize);
@@ -58,16 +45,6 @@ class UsersContainer extends React.Component<UsersContainerType> {
     }
 }
 
-// let mapStateToProps = (state: RootState) => {
-//     return {
-//         users: state.usersPage.users,
-//         pageSize: state.usersPage.pageSize,
-//         totalUsersCount: state.usersPage.totalUsersCount,
-//         currentPage: state.usersPage.currentPage,
-//         isFetching: state.usersPage.isFetching,
-//         followingInProgress: state.usersPage.followingInProgress,
-//     };
-// };
 let mapStateToProps = (state: RootState) => {
     return {
         users: getUsersSelector(state),
@@ -88,3 +65,18 @@ export default compose<React.ComponentType>(
         unfollow,
     }),
 )(UsersContainer);
+
+//types
+
+export type UsersContainerType = {
+    users: UserType[];
+    pageSize: number;
+    totalUsersCount: number;
+    currentPage: number;
+    isFetching: boolean;
+    followingInProgress: number[];
+    setFollowingInProgress: (isProgress: boolean, userId: number) => void;
+    getUsers: (currentPage: number, pageSize: number) => void;
+    follow: (userId: number) => void;
+    unfollow: (userId: number) => void;
+};

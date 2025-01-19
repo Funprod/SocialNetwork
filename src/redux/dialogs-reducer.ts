@@ -1,5 +1,3 @@
-import { DialogsPageTypeStore } from './store';
-
 let initialState: DialogsPageTypeStore = {
     dialogsData: [
         { id: 1, name: 'Dimych' },
@@ -37,6 +35,23 @@ export const addMessageActionCreator = (newMessageBody: string) => {
         type: 'ADD_MESSAGE',
         newMessageBody,
     } as const;
+};
+
+//types
+
+export type DialogsPageTypeStore = {
+    messagesData: MessageDataTypeStore[];
+    dialogsData: DialogsDataTypStore[];
+};
+
+export type DialogsDataTypStore = {
+    id: number;
+    name: string;
+};
+
+export type MessageDataTypeStore = {
+    id?: number;
+    message: string;
 };
 
 type Action = ReturnType<typeof addMessageActionCreator>;

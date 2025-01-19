@@ -1,10 +1,10 @@
 import s from './Dialogs.module.css';
 import { DialogItem } from './DialogItem/DialogsItem';
 import { Message } from './Message/Message';
-import { DialogsPageTypeStore } from '../../redux/store';
 import { Field, InjectedFormProps, reduxForm } from 'redux-form';
 import { FormControl } from '../common/FormsControls/FormsControls';
 import { maxLengthCreator, required } from '../../utils/validators/validator';
+import { DialogsPageTypeStore } from '../../redux/dialogs-reducer';
 
 type DialogsStateType = {
     addMessage: (newMessageBody: string) => void;

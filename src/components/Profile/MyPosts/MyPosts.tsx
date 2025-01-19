@@ -1,15 +1,9 @@
 import React from 'react';
-import { PostDataTypeStore } from '../../../redux/store';
 import s from './MyPosts.module.css';
 import { Post } from './Post/Post';
 import { Field, InjectedFormProps, reduxForm } from 'redux-form';
 import { maxLengthCreator, required } from '../../../utils/validators/validator';
 import { FormControl } from '../../common/FormsControls/FormsControls';
-
-type MyPostDataType = {
-    postData: PostDataTypeStore[];
-    addPost: (addNewPost: string) => void;
-};
 
 export const MyPosts: React.FC<MyPostDataType> = ({ postData, addPost }) => {
     console.log('RENDER my posts');
@@ -59,3 +53,16 @@ export const AddNewPost = (props: InjectedFormProps<FormData>) => {
 };
 
 const AddNewPostRedux = reduxForm<FormData>({ form: 'profileAddNewPost' })(AddNewPost);
+
+//types
+
+export type PostDataTypeStore = {
+    id?: number;
+    message: string;
+    likeCount: number;
+};
+
+type MyPostDataType = {
+    postData: PostDataTypeStore[];
+    addPost: (addNewPost: string) => void;
+};

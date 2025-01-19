@@ -1,9 +1,5 @@
-import { SideBarTypeStore, StateTypeStore } from '../../redux/store';
+import { SideBarTypeStore } from '../../redux/sidebar-reducer';
 import s from './Sidebar.module.css';
-
-type SidebarStateType = {
-    state: SideBarTypeStore[];
-};
 
 export const Sidebar: React.FC<SidebarStateType> = ({ state }) => {
     return (
@@ -21,4 +17,9 @@ export const Sidebar: React.FC<SidebarStateType> = ({ state }) => {
             </div>
         </div>
     );
+};
+
+//types
+type SidebarStateType = {
+    state: SideBarTypeStore[];
 };

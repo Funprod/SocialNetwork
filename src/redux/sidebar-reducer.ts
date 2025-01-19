@@ -1,5 +1,3 @@
-import { SideBarTypeStore } from './store';
-
 let initialState: SideBarTypeStore[] = [
     { id: 1, name: 'Aysel' },
     { id: 2, name: 'Andrey' },
@@ -8,4 +6,10 @@ let initialState: SideBarTypeStore[] = [
 
 export const sidebarReducer = (state: SideBarTypeStore[] = initialState, action: any) => {
     return state;
+};
+
+//types
+export type SideBarTypeStore = {
+    id: number;
+    name: string;
 };
