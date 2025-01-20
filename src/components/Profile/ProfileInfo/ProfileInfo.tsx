@@ -1,6 +1,7 @@
 import { UserDataType } from '../../../redux/profile-reducer';
 import { Preloader } from '../../common/Preloader/Preloader';
 import s from './ProfileInfo.module.css';
+import userPhoto from '../../../assets/img/images.png';
 import { ProfileStatusWithHooks } from './ProfileStatusWithHooks';
 
 export type ProfileInfoType = {
@@ -20,7 +21,10 @@ export const ProfileInfo: React.FC<ProfileInfoType> = ({ profile, status, update
                 {/* <img src="https://i.pinimg.com/736x/56/bc/92/56bc92d7cad2131fb87f52af3cd3e71c.jpg" alt="#" /> */}
             </div>
             <div className={s.descriptionBlock}>
-                <img src={profile.photos.large} alt="Здесь должна быть ваша фотография" />
+                <img
+                    src={profile.photos.large !== null ? profile.photos.small : userPhoto}
+                    alt="Здесь должна быть ваша фотография"
+                />
                 <h2>{profile.fullName}</h2>
                 <ProfileStatusWithHooks status={status} updateStatus={updateStatus} />
                 <ul>

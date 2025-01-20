@@ -10,10 +10,10 @@ import Login from './components/Login/Login';
 import ProfileContainer from './components/Profile/ProfileContainer';
 import DialogsContainer from './components/Dialogs/DialogsContainer';
 import { Component } from 'react';
-import { connect } from 'react-redux';
+import { connect, Provider } from 'react-redux';
 import { compose } from 'redux';
 import { initializeApp } from './redux/app-reducer';
-import { RootState } from './redux/redux-store';
+import { RootState, store } from './redux/redux-store';
 import { Preloader } from './components/common/Preloader/Preloader';
 
 type MapDispatchPropsType = {
@@ -54,4 +54,15 @@ const mapStateToProps = (state: RootState): MapStateToProps => ({
     initialized: state.app.initialized,
 });
 
-export default compose(connect(mapStateToProps, { initializeApp }))(App);
+// export default compose(connect(mapStateToProps, { initializeApp }))(App);
+const AppContainer = compose(connect(mapStateToProps, { initializeApp }))(App);
+
+export const MainApp = (props: any) => {
+    return (
+        <Provider store={store}>
+            <HashRouter>
+                <AppContainer />
+            </HashRouter>
+        </Provider>
+    );
+};
